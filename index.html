@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAJARSTUDY</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body style="text-align:center; font-family:sans-serif; margin-top:100px;">
+  <h2>BELAJAR BAHASA JERMAN      <img src="https://flagcdn.com/w40/de.png"></h2> 
+  <h2 id="soal">fajar</h2>
+  <input id="jawaban" placeholder="Tulis jawaban..." autocomplete="off" />
+  <button onclick="cek()">Cek</button>
+  <p id="hasil"></p>
+
+  <script>
+    const soal = [
+   { jp: "eins", id: ["1"] },
+{ jp: "zwei", id: ["2"] },
+{ jp: "drei", id: ["3"] },
+{ jp: "vier", id: ["4"] },
+{ jp: "fünf", id: ["5"] },
+{ jp: "sechs", id: ["6"] },
+{ jp: "sieben", id: ["7"] },
+{ jp: "acht", id: ["8"] },
+{ jp: "neun", id: ["9"] },
+{ jp: "zehn", id: ["10"] },
+{ jp: "elf", id: ["11"] },
+{ jp: "zwölf", id: ["12"] },
+{ jp: "dreizehn", id: ["13"] },
+{ jp: "vierzehn", id: ["14"] },
+{ jp: "fünfzehn", id: ["15"] },
+{ jp: "sechzehn", id: ["16"] },
+{ jp: "siebzehn", id: ["17"] },
+{ jp: "achtzehn", id: ["18"] },
+{ jp: "neunzehn", id: ["19"] },
+{ jp: "zwanzig", id: ["20"] },
+    ];
+
+    soal.sort(() => Math.random() - 0.5);
+
+    let index = 0;
+    document.getElementById("soal").textContent = "Kata: " + soal[index].jp;
+
+    function cek() {
+      const jwb = document.getElementById("jawaban").value.trim().toLowerCase();
+      const hasil = document.getElementById("hasil");
+      const jawabanBenar = soal[index].id.map(a => a.toLowerCase());
+
+      if (jawabanBenar.includes(jwb)) {
+        hasil.style.color = "green";
+        hasil.textContent = "✅ Benar!";
+        index++;
+        if (index < soal.length) {
+          setTimeout(() => {
+            document.getElementById("soal").textContent = "Kata: " + soal[index].jp;
+            document.getElementById("jawaban").value = "";
+            hasil.textContent = "";
+          }, 1000);
+        } else {
+          hasil.style.color = "blue";
+          hasil.textContent = "🎉 Semua soal selesai!";
+        }
+      } else {
+        hasil.style.color = "red";
+        hasil.textContent = "❌ Salah! Jawaban yang benar: " + jawabanBenar.join(" / ");
+      }
+    }
+
+    // 🔹 Tambahan: biar tekan Enter langsung cek jawaban
+    document.getElementById("jawaban").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        cek();
+      }
+    });
+  </script>
+
+  <footer style="margin-top:30px;">©️ Fajar Cun</footer>
+</body>
+</html>
