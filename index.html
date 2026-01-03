@@ -1,29 +1,97 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FAJARSTUDY</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAJARSTUDY</title>
+
+<style>
+body {
+  background: linear-gradient(135deg, #1e1e2f, #2b2b45);
+  font-family: "Segoe UI", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  color: white;
+}
+
+.card {
+  background: #ffffff15;
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 30px;
+  width: 330px;
+  text-align: center;
+  box-shadow: 0 0 20px #000;
+}
+
+h2 {
+  margin-bottom: 5px;
+}
+
+#soal {
+  font-size: 32px;
+  margin: 15px 0;
+  color: #ffd6ff;
+}
+
+button {
+  background: linear-gradient(135deg, #ff7ac3, #7aa2ff);
+  border: none;
+  border-radius: 25px;
+  padding: 10px 20px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+input {
+  width: 80%;
+  padding: 10px;
+  border-radius: 15px;
+  border: none;
+  outline: none;
+  text-align: center;
+  margin: 10px 0;
+}
+
+#hasil {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.score {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #baffc9;
+}
+</style>
 </head>
 
-<body style="text-align:center; font-family:sans-serif; margin-top:100px;">
-  
-  <h2>
-    BELAJAR BAHASA JERMAN 
-    <img src="https://flagcdn.com/w40/de.png">
-  </h2> 
+<body>
 
-  <h2 id="soal">fajar</h2>
+<div class="card">
+  <h2>German Quiz  <img src="https://flagcdn.com/w40/de.png"></h2>
+  <div id="soal">Eins</div>
 
-  <!-- tombol suara -->
   <button onclick="playSound()">🔊 Dengarkan</button>
 
   <br><br>
 
-  <input id="jawaban" placeholder="Tulis jawaban..." autocomplete="off" />
+  <input id="jawaban" placeholder="Jawaban..." autocomplete="off">
+  <br>
   <button onclick="cek()">Cek</button>
 
-  <p id="hasil"></p>
+  <div id="hasil"></div>
+  <div class="score">Skor: <span id="skor">0</span></div>
+  <footer style="margin-top:30px;">©️ Fajar Cun</footer>
+</div>
 
 <script>
 const soal = [
@@ -171,55 +239,63 @@ const soal = [
 soal.sort(() => Math.random() - 0.5);
 
 let index = 0;
+let skor = 0;
+
 updateSoal();
 
 function updateSoal() {
-  document.getElementById("soal").textContent = "Kata: " + soal[index].jp;
-  playSound(); // 🔥 otomatis dibacakan saat soal muncul
+  document.getElementById("soal").textContent = soal[index].jp;
+  playSound();
 }
 
-// 🔊 suara bawaan browser
 function playSound() {
-  speechSynthesis.cancel(); // stop suara sebelumnya
+  speechSynthesis.cancel();
   let u = new SpeechSynthesisUtterance(soal[index].jp);
   u.lang = "de-DE";
-  u.rate = 0.8; // pelan dikit biar jelas
+  u.rate = 0.85;
   speechSynthesis.speak(u);
 }
 
 function cek() {
-  const jwb = document.getElementById("jawaban").value.trim().toLowerCase();
-  const hasil = document.getElementById("hasil");
-  const jawabanBenar = soal[index].id;
+  let input = document.getElementById("jawaban");
+  let hasil = document.getElementById("hasil");
+  let jawabanUser = input.value.trim().toLowerCase();
 
-  if (jawabanBenar.includes(jwb)) {
-    hasil.style.color = "green";
-    hasil.textContent = "✅ Benar!";
+  // cek apakah jawaban user ada di array id
+  let benar = soal[index].id.some(j =>
+    j.toLowerCase() === jawabanUser
+  );
+
+  if (benar) {
+    skor += 10;
+    hasil.style.color = "#7CFF7C";
+    hasil.textContent = "✨ Benar!";
     index++;
-
-    if (index < soal.length) {
-      setTimeout(() => {
-        document.getElementById("jawaban").value = "";
-        hasil.textContent = "";
-        updateSoal();
-      }, 1000);
-    } else {
-      hasil.style.color = "blue";
-      hasil.textContent = "🎉 Semua soal selesai!";
-    }
   } else {
-    hasil.style.color = "red";
-    hasil.textContent = "❌ Salah! Jawaban benar: " + jawabanBenar[0];
+    hasil.style.color = "#ff7c7c";
+    // gabungkan semua jawaban benar (kalau lebih dari satu)
+    hasil.textContent = `❌ Salah! Jawaban benar: ${soal[index].id.join(" / ")}`;
+  }
+
+  document.getElementById("skor").textContent = skor;
+  input.value = "";
+
+  if (index < soal.length) {
+    setTimeout(() => {
+      hasil.textContent = "";
+      updateSoal();
+    }, 1500); // aku panjangkan dikit biar kebaca
+  } else {
+    hasil.textContent = "🎉 Selesai!";
   }
 }
 
-// tekan Enter langsung cek
+
 document.getElementById("jawaban").addEventListener("keypress", e => {
   if (e.key === "Enter") cek();
 });
 </script>
 
-<footer style="margin-top:30px;">©️ Fajar Cun</footer>
 
 </body>
 </html>
